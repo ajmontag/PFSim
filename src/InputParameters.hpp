@@ -9,6 +9,7 @@
  *   Boost 1.0 <http://www.boost.org/users/license.html>
  */
 
+#include <cstdio>
 #include <iostream>
 #include <vector>
 #include <string>
@@ -51,6 +52,11 @@ public:
     InputParameters() : numResources_(0), scheduleTime_(0) { /* do nothing */ } 
     ~InputParameters() { /* do nohting */ } 
 
+    /* Getters */ 
+    const std::vector<Task>& tasks() const { return tasks_; }
+    int numResources() const { return numResources_; }
+    int scheduleTime() const { return scheduleTime_; }
+
     /**
      * Fill the structure from the (formatted) stream. 
      * @throws MalformedInputException
@@ -76,7 +82,7 @@ private:
 inline std::istream& operator>>(std::istream& is, Task& t)
 {
     is >> t.alias_;
-    is.ignore(1 , ',');
+    t.alias_.erase(t.alias_.size() - 1); 
     is >> t.exec_;
     is.ignore(1 , ',');
     if (!is) throw MalformedInputException("input file is bad in Task"); 
@@ -90,11 +96,18 @@ inline std::istream& operator>>(std::istream& is, InputParameters& param)
     is >> param.numResources_;
     is >> param.scheduleTime_;
     if (!is) throw MalformedInputException("Malformed Input before task list");
-    while (is.good()) {
+    while (is.peek() != EOF) {
         param.tasks_.push_back(Task()); 
-        is >> param.tasks_.back();  
+        is >> param.tasks_.back(); 
+        is.ignore(1, '\n'); 
     }
     return is; 
+}
+
+std::ostream& operator<<(std::ostream& os, const Task& t)
+{
+    os << "[" << t.alias_ << ", " << t.exec_ << ", " << t.period_ << "]"; 
+    return os;
 }
 
 std::ostream& operator<<(std::ostream& os, const InputParameters& param)
@@ -103,7 +116,7 @@ std::ostream& operator<<(std::ostream& os, const InputParameters& param)
     os << "ScheduleTime = " << param.scheduleTime_ << std::endl;
     os << "Scheduling for tasks:\n\t"; 
     for (std::vector<Task>::const_iterator i = param.tasks_.begin(); i != param.tasks_.end(); ++i) {
-        os << (*i).alias_ << ", ";      
+        os << (*i) << " & ";      
     } 
     return os; 
 }
