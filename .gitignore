@@ -1,5 +1,5 @@
 # Executables
-pf
+src/pf
 
 # Compiled Object files
 *.slo
