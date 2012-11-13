@@ -44,6 +44,7 @@ public:
     std::string alias_;
     int exec_; 
     int period_; 
+    float weight_; 
 };
 
 
@@ -87,6 +88,7 @@ inline std::istream& operator>>(std::istream& is, Task& t)
     is.ignore(1 , ',');
     if (!is) throw MalformedInputException("input file is bad in Task"); 
     is >> t.period_;
+    t.weight_ = (float) t.exec_ / (float) t.period_; 
     return is; 
 }
 
@@ -106,7 +108,7 @@ inline std::istream& operator>>(std::istream& is, InputParameters& param)
 
 std::ostream& operator<<(std::ostream& os, const Task& t)
 {
-    os << "[" << t.alias_ << ", " << t.exec_ << ", " << t.period_ << "]"; 
+    os << "[" << t.alias_ << ", " << t.exec_ << ", " << t.period_ << ", " << t.weight_ << "]"; 
     return os;
 }
 
