@@ -10,6 +10,8 @@
  */
 
 #include "InputParameters.hpp"
+#include "Schedule.hpp"
+#include "AlgoPF.hpp"
 
 using namespace std; 
 using namespace pfair; 
@@ -26,6 +28,13 @@ int main (int argc, char** argv)
 
     // print stuff for testing 
     cout << param << endl; 
+
+    Schedule s(param.numResources(), param.scheduleTime(), param.numTasks()); 
+
+    algoPF(s, param.tasks()); 
+
+    std::cout << "Completed Algo PF. Schedule: \n";
+    std::cout << s << std::endl; 
 
     return 0; 
 }

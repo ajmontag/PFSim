@@ -1,3 +1,5 @@
+#ifndef _PFSIM_INPUT_PARAMETERS_HPP_
+#define _PFSIM_INPUT_PARAMETERS_HPP_
 /**
  * PFair
  * 
@@ -13,6 +15,8 @@
 #include <iostream>
 #include <vector>
 #include <string>
+
+#include "Task.hpp"
 
 namespace pfair {
 
@@ -38,16 +42,6 @@ private:
     const std::string msg_; 
 }; 
 
-
-class Task {
-public:
-    std::string alias_;
-    int exec_; 
-    int period_; 
-    float weight_; 
-};
-
-
 class InputParameters {
 public:
     InputParameters() : numResources_(0), scheduleTime_(0) { /* do nothing */ } 
@@ -56,6 +50,7 @@ public:
     /* Getters */ 
     const std::vector<Task>& tasks() const { return tasks_; }
     int numResources() const { return numResources_; }
+    int numTasks() const { return tasks_.size(); }
     int scheduleTime() const { return scheduleTime_; }
 
     /**
@@ -80,6 +75,7 @@ private:
 // Implementation
 //////
 
+// read task from input stream (file)
 inline std::istream& operator>>(std::istream& is, Task& t)
 {
     is >> t.alias_;
@@ -92,26 +88,30 @@ inline std::istream& operator>>(std::istream& is, Task& t)
     return is; 
 }
 
+// read input parameters from input stream (file)
 inline std::istream& operator>>(std::istream& is, InputParameters& param)
 {
     if (!is) throw MalformedInputException("input file is bad"); 
     is >> param.numResources_;
     is >> param.scheduleTime_;
-    if (!is) throw MalformedInputException("Malformed Input before task list");
-    while (is.peek() != EOF) {
+    if (!is) throw MalformedInputException("Malformed Input before task list"); 
+    for (int i = 0; is.peek() != EOF; ++i) {
         param.tasks_.push_back(Task()); 
+        param.tasks_.back().id = i; // task.id matches index into vector
         is >> param.tasks_.back(); 
         is.ignore(1, '\n'); 
     }
     return is; 
 }
 
+// write Task to output stream (stdout)
 std::ostream& operator<<(std::ostream& os, const Task& t)
 {
     os << "[" << t.alias_ << ", " << t.exec_ << ", " << t.period_ << ", " << t.weight_ << "]"; 
     return os;
 }
 
+// write InputParameters to output stream (stdout) 
 std::ostream& operator<<(std::ostream& os, const InputParameters& param)
 {
     os << "NumResources = " << param.numResources_ << std::endl; 
@@ -124,3 +124,5 @@ std::ostream& operator<<(std::ostream& os, const InputParameters& param)
 }
 
 } // end namespace pfair
+
+#endif // _PFSIM_INPUT_PARAMETERS_HPP_

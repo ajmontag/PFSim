@@ -10,14 +10,16 @@ all: pf
 
 
 # Executable Targets
-pf: main.o
+pf: main.o AlgoPF.o
 	$(LINK)
 
 
 # Object File Targets
-main.o: main.cpp InputParameters.hpp
+main.o: main.cpp InputParameters.hpp Task.hpp AlgoPF.hpp
 	$(COMPILEONLY)
 
+AlgoPF.o: AlgoPF.cpp Schedule.hpp Task.hpp
+	$(COMPILEONLY)
 
 # Housekeeping targets
 .PHONY: clean
