@@ -41,6 +41,11 @@ inline Schedule::Schedule(int m, int duration, int taskCount) :
     // do nothing
 }
 
+inline void Schedule::tick()
+{
+    currentTime_ += 1;
+}
+
 inline void Schedule::set(int taskID, bool isScheduled)
 {
     s_[currentTime_][taskID] = isScheduled; 
@@ -58,7 +63,7 @@ inline int Schedule::currentTime() const
     return currentTime_;
 }
 
-inline int duration() const
+inline int Schedule::duration() const
 {
     return duration_; 
 }
