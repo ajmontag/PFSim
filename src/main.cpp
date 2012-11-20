@@ -33,6 +33,8 @@ int main (int argc, char** argv)
 
     algoPF(s, param.tasks()); 
 
+    // TODO also find max lag for each task
+
     std::cout << "Completed Algo PF. Schedule: \n";
     std::cout << s << std::endl; 
 
