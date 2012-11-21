@@ -89,7 +89,7 @@ inline int Schedule::resourceCount() const
 inline std::ostream& operator<<(std::ostream& os, const Schedule& rhs)
 {
     os << "TODO make this operator output the schedule in the correct format\n";
-    os << "time\ttasks...";
+    os << "time\ttasks...\n";
     for (int t = 0; t < rhs.s_.size(); ++t) {
         os << t << '\t'; 
         for (int i = 0; i < rhs.s_[0].size(); ++i) {
