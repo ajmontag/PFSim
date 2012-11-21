@@ -6,6 +6,15 @@
 
 namespace pfair {
 
+class SchedulingException : public std::exception {
+public:
+    SchedulingException(const std::string& msg) : msg_(msg) { /* do nothing */ } 
+    virtual ~SchedulingException() throw() { /* do nothing */ }
+    virtual const char* what() const throw() { return msg_.c_str(); }
+private:
+    const std::string msg_; 
+}; 
+
 class Schedule {
 public:
     Schedule(int m, int duration, int taskCount);
@@ -23,6 +32,8 @@ public:
 
     int duration() const; 
 
+    int resourceCount() const; 
+
     friend std::ostream& operator<<(std::ostream& os, const Schedule& rhs); 
 
 private:
@@ -32,11 +43,12 @@ private:
     std::vector<int> prevScheduled_; // provides the last term for lag sum(x, i)
     int currentTime_; 
     int duration_; 
+    int m_;
 };
 
 inline Schedule::Schedule(int m, int duration, int taskCount) :
     s_(duration, std::vector<bool>(taskCount, false)), prevScheduled_(std::vector<int>(taskCount, 0)), 
-    currentTime_(0), duration_(duration)
+    currentTime_(0), duration_(duration), m_(m)
 {
     // do nothing
 }
@@ -66,6 +78,11 @@ inline int Schedule::currentTime() const
 inline int Schedule::duration() const
 {
     return duration_; 
+}
+
+inline int Schedule::resourceCount() const
+{
+    return m_; 
 }
 
 // write schedule to the stream (stdout)

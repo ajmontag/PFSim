@@ -1,5 +1,6 @@
 #include "AlgoPF.hpp"
 #include <cmath>
+#include <sstream>
 
 namespace pfair { 
 
@@ -22,7 +23,7 @@ void algoPF(Schedule& s, const std::vector<Task>& tasks)
         std::vector<char> alpha(tasks.size(), '0');
         std::vector<ePace> pace(tasks.size(), NONE_PACE);
         std::vector<eUrgency> urgency(tasks.size(), NONE_URGENCY);
-        // TODO we may be able to remove these vectors and just use the result in the calc below
+        // OPTIMIZE we may be able to remove these vectors and just use the result in the calc below
 
         bool contendingTaskExists = false; 
 
@@ -64,14 +65,30 @@ void algoPF(Schedule& s, const std::vector<Task>& tasks)
         
         } // end for each task
 
-        // schedule all urgent tasks
-        // TODO 
+        int resourcesAvailable = s.resourceCount();
 
-        // if contending tasks exist
-        // TODO 
-        if (1) {
+        // schedule all urgent tasks
+        // OPTIMIZE could put this in the loop above
+        for (int i = 0; i < tasks.size(); ++i) {
+            if (URGENT == urgency[i]) {
+                s.set(i); 
+                resourcesAvailable -= 1;
+            }
+        }
+
+        if (resourcesAvailable < 0) {
+            std::stringstream ss; 
+            ss << "There are more urgent tasks than available resources!\ntime = " << t << " Difference = " << resourcesAvailable; 
+            throw SchedulingException(ss.str());
+        }
+
+        // if contending tasks exist and resources are available
+        if (contendingTaskExists && resourcesAvailable > 0) {
             // determine total ordering 
             // TODO 
+            //  x > y if and only if alpha(x, t) >= alpha(y, t), 
+            //  where the comparison between characteristic substrings alpha(x, t) and alpha(y, t) 
+            //  is resolved lexicographically with - < 0 <  +.
 
             // schedule on the available resources in order
             // TODO 
