@@ -1,5 +1,6 @@
 # Makefile for PFair Scheduler
 
+CXX = g++-4
 FLAGS = -Wall -g
 COMPILEONLY = $(CXX) $(FLAGS) -c $<
 LINK = $(CXX) $(FLAGS) -o $@ $+

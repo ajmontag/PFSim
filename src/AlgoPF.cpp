@@ -1,7 +1,9 @@
 #include "AlgoPF.hpp"
 #include <cmath>
 #include <sstream>
-#include <queue>
+#include <deque>
+#include <algorithm>
+#include <vector>
 
 namespace pfair { 
 
@@ -9,6 +11,65 @@ typedef enum { NONE_PACE, AHEAD, BEHIND, PUNCTUAL } ePace;
 typedef enum { NONE_URGENCY, URGENT, TNEGRU, CONTENDING } eUrgency; 
 typedef enum { NONE_CHAR = 0, MINUS = 1, ZERO = 2, PLUS = 3 } eChar; // makes compare easier
 
+
+//TODO remove prototype
+inline void printSubstrings(std::vector<int>& contendingTasks, const std::vector<std::deque<eChar> >& cs);
+	
+	
+	//create comparator for comparing lexicographical strings
+	struct CompareSubstring : std::binary_function<int, int, bool> 
+	{
+		//Notes/references
+			//"with +  having  priority  over  0,  and  0  over -" pg. 616
+	
+		private:
+			//need access to the substrings to compare
+			const std::vector<std::deque<eChar> >& cs;
+		public:
+			//constructor to get substrings
+			CompareSubstring(const std::vector<std::deque<eChar> >& csIn): cs(csIn) {};
+		
+		bool operator() (int i,int j) const
+		{
+
+			//start at 1 to begin comparing substrings at t+1
+			int counter = 1;
+			
+			//loop through and compare substrings until difference is found or the end of either substring is reached
+			while(counter < cs[i].size() && counter < cs[j].size())
+			{
+				//i's character is strictly greater than j's character
+				if(cs[i][counter] > cs[j][counter])
+				{
+					return true;
+				}
+				//i's character is strictly less than j's character
+				else if(cs[i][counter] < cs[j][counter])
+				{
+					return false;
+				}
+				
+				//they're the same - go to next character
+				counter += 1;
+			}
+			//if hasn't returned yet, strings are the same up to one (or both) running out of characters
+			
+			//if i is shorter than j, it comes first in lexicographical order
+			if(cs[i].size() < cs[j].size())
+			{
+				return true;
+			}
+			
+			//same length OR j is shorter - return false either way
+			return false;
+			
+		
+		}
+	};
+	
+	
+	
+	
 inline eChar signChar(float f) 
 {
     if (f > 0.0f) return PLUS; 
@@ -17,38 +78,46 @@ inline eChar signChar(float f)
 }
 
 /**
- * push more chars onto the characteristic substring, until a 0 is reached
+ * push more chars onto the characteristic substring, until a 0 is reached OR the end of the schedule is reached
  */
-inline void computeCharSubstring(std::queue<eChar>& q, float w, int t)
+inline void computeCharSubstring(std::deque<eChar>& q, float w, int t, Schedule &s)
 {
     eChar c; 
     do {
         c = signChar(w * (t + 1) - floor(w * t) - 1.0f);
-        q.push(c); 
+        q.push_back(c); 
         t += 1; 
-    } while (ZERO != c);
+    } while (ZERO != c && t < s.duration());
 }
 
 template <typename T>
-inline void popAll(std::vector<std::queue<T> >& v) 
+inline void popAll(std::vector<std::deque<T> >& v) 
 {
     for (int i = 0; i < v.size(); ++i) {
-        v[i].pop(); 
+        v[i].pop_front(); 
     }
 }
+
+
+
 
 /**
  * Sorts contendingTasks in lexiographic order based on their characteristicSubstring
  */
-inline void lexSort(std::vector<int>& contendingTasks, const std::vector<std::queue<eChar> >& cs)
+inline void lexSort(std::vector<int>& contendingTasks, const std::vector<std::deque<eChar> >& cs)
 {
-    // TODO 
+	//sort the vector
+	 std::sort(contendingTasks.begin(), contendingTasks.end(), CompareSubstring(cs));
+
+	 //Debugging - print out substrings
+	 printSubstrings(contendingTasks, cs);
 }
 
 void algoPF(Schedule& s, const std::vector<Task>& tasks)
 {
     // we could also compute the entire characteristic string for the entire schedule duration
-    std::vector<std::queue<eChar> > cs(tasks.size()); // characteristicSubstrings
+	//cs index 0 is current time, 1 is t+1, etc (add at back)
+    std::vector<std::deque<eChar> > cs(tasks.size()); // characteristicSubstrings
 
     // for each time unit
     for (int t = 0; t < s.duration(); ++t, s.tick(), popAll(cs)) {
@@ -72,9 +141,10 @@ void algoPF(Schedule& s, const std::vector<Task>& tasks)
             // a[t](x)  =  sign(x.w * (t  +  1) - floor( x.w * t) - 1)
             //alpha[i] = signChar(task.weight_ * (t + 1) - floor(task.weight_ * t) - 1.0f);
             
-            // if the substring is empty, compute more up to the next '0'
-            if (cs[i].empty()) {
-                computeCharSubstring(cs[i], task.weight_, t);
+            // if the substring is empty OR only has 1 element, compute more up to the next '0'
+			//NOTE: If it only has 1 element it will need more in case tasks need to be compared and sorted
+            if (cs[i].size() <= 1) {
+                computeCharSubstring(cs[i], task.weight_, t + cs[i].size(), s);
             }
             const eChar alpha = cs[i].front(); 
 
@@ -129,7 +199,7 @@ void algoPF(Schedule& s, const std::vector<Task>& tasks)
             //  x > y if and only if alpha(x, t) >= alpha(y, t), 
             //  where the comparison between characteristic substrings alpha(x, t) and alpha(y, t) 
             //  is resolved lexicographically with - < 0 <  +.
-            lexSort(contendingTasks, cs);
+			lexSort(contendingTasks, cs);
 
             // schedule on the available resources in order
             for (std::vector<int>::iterator iter = contendingTasks.begin(); 
@@ -142,6 +212,25 @@ void algoPF(Schedule& s, const std::vector<Task>& tasks)
 
     } // end for each time unit
 
+}
+
+//debugging function
+inline void printSubstrings(std::vector<int>& contendingTasks, const std::vector<std::deque<eChar> >& cs)
+{
+	int taskNumber;
+	for(int i = 0; i < contendingTasks.size(); i++)
+	{
+		taskNumber = contendingTasks[i];
+		std::cerr << taskNumber << " -> ";
+		std::cerr << cs[taskNumber].size() << "--------";
+
+		for(int j = 1; j < cs[taskNumber].size(); j++)
+		{
+			std::cerr << cs[taskNumber][j];
+		}
+		std::cerr << std::endl;
+	}
+	std::cerr <<"------------" << std::endl;
 }
 
 } // end namespace pfair

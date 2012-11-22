@@ -1,0 +1,28 @@
+NumResources = 3
+ScheduleTime = 20
+Scheduling for tasks:
+	[v, 1, 3, 0.333333] & [w, 2, 4, 0.5] & [x, 5, 7, 0.714286] & [y, 8, 11, 0.727273] & [z, 335, 462, 0.725108] & 
+Completed Algo PF. Schedule: 
+TODO make this operator output the schedule in the correct format
+time	tasks...
+0	0	0	1	1	1	
+1	0	1	0	1	1	
+2	1	1	1	0	0	
+3	0	0	1	1	1	
+4	0	0	1	1	1	
+5	1	1	0	1	0	
+6	0	1	1	0	1	
+7	0	0	1	1	1	
+8	1	0	0	1	1	
+9	0	1	1	1	0	
+10	1	0	1	0	1	
+11	0	1	0	1	1	
+12	0	0	1	1	1	
+13	1	1	1	0	0	
+14	0	0	1	1	1	
+15	0	1	0	1	1	
+16	0	0	1	1	1	
+17	1	1	1	0	0	
+18	0	0	1	1	1	
+19	1	1	1	0	0	
+

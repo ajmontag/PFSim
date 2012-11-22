@@ -1,0 +1,3 @@
+g++ -Wall -g -c main.cpp
+g++ -Wall -g -c AlgoPF.cpp
+g++ -Wall -g -o pf main.o AlgoPF.o
