@@ -1,3 +1,5 @@
+Borrowed from: http://se.wtb.tue.nl/sewiki/wonham/gantt.py
+
 gantt.py is simple Python script that translates 
 simulation output into GNUplot commands that draw a Gantt chart.
 
