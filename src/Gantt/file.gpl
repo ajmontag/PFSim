@@ -1,0 +1,17 @@
+set xrange [0.000000:4.000000]
+set yrange [0.400000:2.600000]
+set autoscale x
+set xlabel "time"
+set ylabel ""
+set title ""
+set ytics ("1" 2, "2" 1)
+set key outside width +2
+set grid xtics
+set palette model RGB defined ( 0 1.0 0.8 0.8, 1 1.0 0.8 1.0, 2 0.8 0.8 1.0, 3 0.8 1.0 1.0, 4 0.8 1.0 0.8, 5 1.0 1.0 0.8 )
+unset colorbox
+set object 1 rectangle from 1.000000, 1.6 to 2.000000, 2.4 fillcolor palette frac 0.00 fillstyle solid 0.8
+set object 2 rectangle from 2.000000, 0.6 to 3.000000, 1.4 fillcolor palette frac 0.50 fillstyle solid 0.8
+set object 3 rectangle from 3.000000, 1.6 to 4.000000, 2.4 fillcolor palette frac 1.00 fillstyle solid 0.8
+plot -1 title "a" with lines linecolor palette frac 0.00  linewidth 6, \
+	-1 title "b" with lines linecolor palette frac 0.50  linewidth 6, \
+	-1 title "c" with lines linecolor palette frac 1.00  linewidth 6

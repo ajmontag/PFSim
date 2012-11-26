@@ -1,0 +1,10 @@
+reset
+set terminal postscript eps color solid
+set output "var1.eps"
+set lmargin 4
+set rmargin 12
+set multiplot layout 2,1
+    load "vargantt1.gpl"
+    load "varlottime1.gpl"
+unset multiplot
+unset output

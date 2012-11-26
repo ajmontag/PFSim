@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <iostream>
+#include "Task.hpp"
 
 namespace pfair {
 
@@ -33,6 +34,8 @@ public:
     int duration() const; 
 
     int resourceCount() const; 
+
+    void createPlotData(std::ostream& os, const std::vector<Task>& tasks) const;
 
     friend std::ostream& operator<<(std::ostream& os, const Schedule& rhs); 
 
@@ -83,6 +86,26 @@ inline int Schedule::duration() const
 inline int Schedule::resourceCount() const
 {
     return m_; 
+}
+
+inline void Schedule::createPlotData(std::ostream& os, const std::vector<Task>& tasks) const
+{
+    // http://se.wtb.tue.nl/sewiki/wonham/gantt.py
+    // resource start-time end-time task
+
+    // convert from isScheduled = s_[time][task]
+    //std::vector<> resource(m_);
+    for (int t = 0; t < duration_; ++t) {
+        int resource;
+        resource = 0;  
+        for (int task = 0; task < s_[t].size(); ++task) {
+            if (s_[t][task]) {
+                os << resource << " " << t << " " << (t + 1);
+                os << " " << tasks[task].alias_ << '\n';
+                resource = (resource + 1) % m_; 
+            }
+        }
+    }
 }
 
 // write schedule to the stream (stdout)

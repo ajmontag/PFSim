@@ -12,6 +12,8 @@
 #include "InputParameters.hpp"
 #include "Schedule.hpp"
 #include "AlgoPF.hpp"
+#include <iostream>
+#include <fstream>
 
 using namespace std; 
 using namespace pfair; 
@@ -35,8 +37,11 @@ int main (int argc, char** argv)
 
     // TODO also find max lag for each task
 
-    std::cout << "Completed Algo PF. Schedule: \n";
-    std::cout << s << std::endl; 
+    cout << "Completed Algo PF. Schedule: \n";
+    cout << s << endl; 
+
+    ofstream ganttFile("gantt.txt");
+    s.createPlotData(ganttFile, param.tasks());
 
     return 0; 
 }

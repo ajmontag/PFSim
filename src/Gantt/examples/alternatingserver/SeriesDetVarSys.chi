@@ -1,0 +1,41 @@
+type item = (nat, real) // (sequence number, time in)
+
+proc G(chan a!: item, val ta: real) =
+|[ var n: nat = 0
+:: *( a!(n,time); delay ta; n:= n + 1 )
+]|
+
+proc S(val name: string, chan a?, b!: item, val t: real) =
+|[ var x: item, tt: real
+:: *( a?x
+      ; tt:= time
+      ; delay t; b!x
+      ; !!name, "\t", tt, "\t", time, "\t", x.0, "\n" // gantt
+      //; !!x.0, "\t", tt, "\t", time, "\t", name, "\n" // lottime
+    )
+]|
+
+proc A(val name: string, chan a?, b!: item, val t, s: real) =
+|[ var x: item, even: bool = true, d, tt: real
+:: *( a?x
+      ; tt:= time
+      ; (     even -> d:= t - s
+        | not even -> d:= t + s
+        )
+      ; delay d; b!x; even:= not even
+      ; !!name, "\t", tt, "\t", time, "\t", x.0, "\n" // gantt
+      //; !!x.0, "\t", tt, "\t", time, "\t", name, "\n" // lottime
+    )
+]|
+
+proc E(chan a?: item) =
+|[ var x: item 
+:: *( a?x )
+]|
+
+model M(val ta: real, t0,t1,t2,s1: real) =
+|[ chan a,b,c,d: item
+:: G(a,ta)
+|| S("S0",a,b,t0) || A("A",b,c,t1,s1) || S("S2",c,d,t2) 
+|| E(d)
+]|
