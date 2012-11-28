@@ -14,9 +14,18 @@
 #include "AlgoPF.hpp"
 #include <iostream>
 #include <fstream>
+#include <vector>
 
 using namespace std; 
 using namespace pfair; 
+
+void outputMaxLags(std::ostream& os, const std::vector<Task>& tasks, const std::vector<float>& maxLags)
+{
+    os << "Max Lags: \n";
+    for (int i = 0; i < tasks.size(); ++i) {
+        os << tasks[i].alias_ << ": " << maxLags[i] << std::endl; 
+    }
+}
 
 int main (int argc, char** argv) 
 {
@@ -32,13 +41,16 @@ int main (int argc, char** argv)
     cout << param << endl; 
 
     Schedule s(param.numResources(), param.scheduleTime(), param.numTasks()); 
+    std::vector<float> maxLags(param.numTasks(), 0.0f); 
 
-    algoPF(s, param.tasks()); 
+    algoPF(s, param.tasks(), maxLags); 
 
     // TODO also find max lag for each task
 
     cout << "Completed Algo PF. Schedule: \n";
-    cout << s << endl; 
+    cout << s << endl;
+
+    outputMaxLags(std::cout, param.tasks(), maxLags);  
 
     ofstream ganttFile("gantt.txt");
     s.createPlotData(ganttFile, param.tasks());

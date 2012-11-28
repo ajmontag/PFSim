@@ -7,7 +7,7 @@
 
 namespace pfair {
 
-void algoPF(Schedule& s, const std::vector<Task>& tasks);
+void algoPF(Schedule& s, const std::vector<Task>& tasks, std::vector<float>& maxLags);
 
 } // end namespace pfair
 
