@@ -36,3 +36,6 @@ images of gnuplot gantt charts from the sample input files.
 See also: 
 [Final Report](https://docs.google.com/document/d/1VwEJmEhah9cgEDX4tTj7JmRTSFGWlVNVInedhLjHhPM/edit) describing the project and its results. 
 
+
+Published under the [Boost Software Licence - Version 1.0](http://www.boost.org/users/license.html). 
+See LICENCE.txt for details. 
