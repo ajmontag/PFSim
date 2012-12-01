@@ -13,3 +13,6 @@ src/pf
 *.lai
 *.la
 *.a
+
+src/gantt.gpl
+src/gantt.txt
