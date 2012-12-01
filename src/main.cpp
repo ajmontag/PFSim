@@ -19,12 +19,23 @@
 using namespace std; 
 using namespace pfair; 
 
+bool pfverbose = false; 
+
 void outputMaxLags(std::ostream& os, const std::vector<Task>& tasks, const std::vector<float>& maxLags)
 {
     os << "Max Lags: \n";
     for (int i = 0; i < tasks.size(); ++i) {
         os << tasks[i].alias_ << ": " << maxLags[i] << std::endl; 
     }
+}
+
+void outputSchedule(std::ostream& os, const std::vector<Task>& tasks, const Schedule& s)
+{
+    os << "time\t"; 
+    for (std::vector<Task>::const_iterator taski = tasks.begin(); taski != tasks.end(); ++taski) {
+        os << (*taski).alias_ << '\t';
+    }
+    os << std::endl << s << std::endl; 
 }
 
 int main (int argc, char** argv) 
@@ -38,18 +49,21 @@ int main (int argc, char** argv)
     }
 
     // print stuff for testing 
-    cout << param << endl; 
-
-    Schedule s(param.numResources(), param.scheduleTime(), param.numTasks()); 
+    if (pfverbose) cout << param << endl; 
+        
     std::vector<float> maxLags(param.numTasks(), 0.0f); 
+    Schedule s(param.numResources(), param.scheduleTime(), param.numTasks()); 
 
-    algoPF(s, param.tasks(), maxLags); 
+    const clock_t tbegin = clock(); 
+    {
+        algoPF(s, param.tasks(), maxLags); 
+    }
+    const clock_t tend = clock();
+    const double elapsed_secs = double(tend - tbegin) / (double) CLOCKS_PER_SEC;
 
-    // TODO also find max lag for each task
-
-    cout << "Completed Algo PF. Schedule: \n";
-    cout << s << endl;
-
+    cout << "Completed Algo PF in " << elapsed_secs << " seconds.\nSchedule:\n";
+    
+    outputSchedule(std::cout, param.tasks(), s);
     outputMaxLags(std::cout, param.tasks(), maxLags);  
 
     ofstream ganttFile("gantt.txt");

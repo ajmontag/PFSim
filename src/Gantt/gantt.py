@@ -93,10 +93,10 @@ if __name__ == '__main__':
                       metavar='FILE',
                       help='Write output to FILE')
     # Add option for using Gnuplot palette file
-#    parser.add_option('-p', '--palette',
-#                      type='string', dest='palettefile',
-#                      metavar='FILE',
-#                      help='Pick task colors (RGB) from a Gnuplot palette specified in FILE (see Gnuplot documentation')
+    parser.add_option('-p', '--palette',
+                      type='string', dest='palettefile',
+                      metavar='FILE',
+                      help='Pick task colors (RGB) from a Gnuplot palette specified in FILE (see Gnuplot documentation')
     # Add option for task color mapping
     parser.add_option('-c', '--color',
                       type='string', dest='colorfile',

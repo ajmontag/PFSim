@@ -108,11 +108,10 @@ inline void Schedule::createPlotData(std::ostream& os, const std::vector<Task>& 
     }
 }
 
-// write schedule to the stream (stdout)
+// write schedule to the stream
+// in form as in Baruah et al. paper of S(x, t) = [0 | 1]
 inline std::ostream& operator<<(std::ostream& os, const Schedule& rhs)
 {
-    os << "TODO make this operator output the schedule in the correct format\n";
-    os << "time\ttasks...\n";
     for (int t = 0; t < rhs.s_.size(); ++t) {
         os << t << '\t'; 
         for (int i = 0; i < rhs.s_[0].size(); ++i) {
