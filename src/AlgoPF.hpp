@@ -7,7 +7,16 @@
 
 namespace pfair {
 
-void algoPF(Schedule& s, const std::vector<Task>& tasks, std::vector<float>& maxLags);
+class MaxLagPair {
+public:
+    MaxLagPair(int t_ = 0, float lag_ =0.0f ) : t(t_), lag(lag_) { }
+    int t; 
+    float lag; 
+};
+
+typedef std::vector<MaxLagPair> MaxLagVect;
+
+void algoPF(Schedule& s, const std::vector<Task>& tasks, MaxLagVect& maxLags);
 
 } // end namespace pfair
 

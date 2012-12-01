@@ -124,7 +124,7 @@ inline void lexSort(std::vector<int>& contendingTasks, const std::vector<std::de
 
 }
 
-void algoPF(Schedule& s, const std::vector<Task>& tasks, std::vector<float>& maxLags)
+void algoPF(Schedule& s, const std::vector<Task>& tasks, MaxLagVect& maxLags)
 {
     // we could also compute the entire characteristic string for the entire schedule duration
     //cs index 0 is current time, 1 is t+1, etc (add at back)
@@ -149,7 +149,8 @@ void algoPF(Schedule& s, const std::vector<Task>& tasks, std::vector<float>& max
             lag[i] = task.weight_ * t - s.prevScheduled(i); 
 
             // store max lag
-            maxLags[i] = std::max(lag[i], maxLags[i]);
+            if (lag[i] > maxLags[i].lag)
+                maxLags[i] = MaxLagPair(t, lag[i]);
 
             // calculate alpha, see bottom of page 607
             // a[t](x)  =  sign(x.w * (t  +  1) - floor( x.w * t) - 1)

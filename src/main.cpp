@@ -21,11 +21,11 @@ using namespace pfair;
 
 bool pfverbose = false; 
 
-void outputMaxLags(std::ostream& os, const std::vector<Task>& tasks, const std::vector<float>& maxLags)
+void outputMaxLags(std::ostream& os, const std::vector<Task>& tasks, const MaxLagVect& maxLags)
 {
     os << "Max Lags: \n";
     for (int i = 0; i < tasks.size(); ++i) {
-        os << tasks[i].alias_ << ": " << maxLags[i] << std::endl; 
+        os << tasks[i].alias_ << ": " << maxLags[i].lag << " @ " << maxLags[i].t << std::endl; 
     }
 }
 
@@ -51,7 +51,7 @@ int main (int argc, char** argv)
     // print stuff for testing 
     if (pfverbose) cout << param << endl; 
         
-    std::vector<float> maxLags(param.numTasks(), 0.0f); 
+    MaxLagVect maxLags(param.numTasks()); 
     Schedule s(param.numResources(), param.scheduleTime(), param.numTasks()); 
 
     const clock_t tbegin = clock(); 
